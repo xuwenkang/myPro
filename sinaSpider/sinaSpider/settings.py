@@ -14,12 +14,23 @@ BOT_NAME = 'sinaSpider'
 SPIDER_MODULES = ['sinaSpider.spiders']
 NEWSPIDER_MODULE = 'sinaSpider.spiders'
 
+# 设置中间件（用户代理 和 Cookies）
+DOWNLOADER_MIDDLEWARES = {
+    "sinaSpider.middleware.UserAgentMiddleware": 401,
+    "sinaSpider.middleware.CookiesMiddleware": 402,
+}
 
+# 管道保存文件
+ITEM_PIPELINES = {
+    'sinaSpider.pipelines.MongoDBPipleline': 300,
+}
+
+DOWNLOAD_DELAY = 5  # 爬虫间隔时间
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'sinaSpider (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
