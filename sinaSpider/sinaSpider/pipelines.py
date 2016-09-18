@@ -17,12 +17,14 @@ class MongoDBPipleline(object):
         """ 判断item的类型，并作相应的处理，再入数据库 """
         if isinstance(item, InformationItem):
             try:
-                self.Information.insert(dict(item))
+                #self.Information.insert(dict(item))
+                print InformationItem, dict(item)
             except Exception:
                 pass
         elif isinstance(item, TweetsItem):
             try:
-                self.Tweets.insert(dict(item))
+                #self.Tweets.insert(dict(item))
+                print TweetsItem, dict(item)
             except Exception:
                 pass
         elif isinstance(item, FollowsItem):
@@ -31,7 +33,8 @@ class MongoDBPipleline(object):
             for i in range(len(follows)):
                 followsItems[str(i + 1)] = follows[i]
             try:
-                self.Follows.insert(followsItems)
+                #self.Follows.insert(followsItems)
+                print FollowsItem, followsItems
             except Exception:
                 pass
         elif isinstance(item, FansItem):
@@ -40,7 +43,8 @@ class MongoDBPipleline(object):
             for i in range(len(fans)):
                 fansItems[str(i + 1)] = fans[i]
             try:
-                self.Fans.insert(fansItems)
+                #self.Fans.insert(fansItems)
+                print FansItem, fansItems
             except Exception:
                 pass
         return item

@@ -23,6 +23,7 @@ DOWNLOADER_MIDDLEWARES = {
 # 管道保存文件
 ITEM_PIPELINES = {
     'sinaSpider.pipelines.MongoDBPipleline': 300,
+    'sinaSpider.pipeItem.filePipeline.FilePipelines': 301,
 }
 
 DOWNLOAD_DELAY = 5  # 爬虫间隔时间
