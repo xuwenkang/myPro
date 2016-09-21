@@ -1,0 +1,2 @@
+{"Num_Follows": 634, "Province": "重庆", "Num_Tweets": 226, "URL": "http://weibo.com/u/5235640836", "Gender": "男", "Num_Fans": 34, "_id": "5235640836", "NickName": "Entuer丶"}
+{"Num_Follows": 201, "Province": "江苏", "Num_Tweets": 7793, "City": "南京", "URL": "http://weibo.com/shanbay", "Gender": "男", "Num_Fans": 2251412, "Signature": "扇贝（shanbay.com）是中国最大的移动互联网英语学习平台，目前拥有数千万注册用户。扇贝旗下拥有包括扇贝单词、扇贝听力、扇贝新闻、扇贝读书、扇贝炼句共五大英语学习产品，涵盖“听、说、读、写”四大功能，旨在为用户提供全方位的英语学习解决方案，真正做到“为用户的学习效果负责”。", "_id": "2139359753", "NickName": "扇贝网"}

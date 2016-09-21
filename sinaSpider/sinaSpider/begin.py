@@ -7,7 +7,8 @@ from scrapy import cmdline
 
 # 开始日志记录
 logger = logging.getLogger('simpleLogger')
-aim = 'scrapy crawl sinaSpider'
+#aim = 'scrapy crawl sinaSpider'
+aim = 'scrapy crawl sinaSpider1'
 logger.debug('项目开始：')
 
 # 项目执行

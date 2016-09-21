@@ -6,9 +6,8 @@ from scrapy.selector import Selector
 from scrapy.http import Request
 from sinaSpider.items import FollowsItem, FansItem, InformationItem, TweetsItem
 
-
 class Spider(CrawlSpider):
-    name = "sinaSpider"
+    name = "sinaSpider1"
     host = "http://weibo.cn"
     start_urls = [
         5235640836, 5676304901, 5871897095, 2139359753, 5579672076, 2517436943, 5778999829, 5780802073, 2159807003,
@@ -33,14 +32,14 @@ class Spider(CrawlSpider):
             fansItems["fans"] = fans
 
             url_follows = "http://weibo.cn/%s/follow" % ID
-            url_fans = "http://weibo.cn/%s/fans" % ID
-            url_tweets = "http://weibo.cn/%s/profile?filter=1&page=1" % ID
-            url_information0 = "http://weibo.cn/attgroup/opening?uid=%s" % ID
+            #url_fans = "http://weibo.cn/%s/fans" % ID
+            #url_tweets = "http://weibo.cn/%s/profile?filter=1&page=1" % ID
+            #url_information0 = "http://weibo.cn/attgroup/opening?uid=%s" % ID
+            #yield Request(url=url_information0, meta={"ID": ID}, callback=self.parse0)  # 去爬个人信息
+            #yield Request(url=url_tweets, meta={"ID": ID}, callback=self.parse2)  # 去爬微博
+            #yield Request(url=url_fans, meta={"item": fansItems, "result": fans}, callback=self.parse3)  # 去爬粉丝
             yield Request(url=url_follows, meta={"item": followsItems, "result": follows},
-                          callback=self.parse3)  # 去爬关注人
-            yield Request(url=url_fans, meta={"item": fansItems, "result": fans}, callback=self.parse3)  # 去爬粉丝
-            yield Request(url=url_information0, meta={"ID": ID}, callback=self.parse0)  # 去爬个人信息
-            yield Request(url=url_tweets, meta={"ID": ID}, callback=self.parse2)  # 去爬微博
+                          callback=self.parse4)  # 去爬关注人
 
     def parse0(self, response):
         """ 抓取个人信息1 """
@@ -63,7 +62,6 @@ class Spider(CrawlSpider):
 
     def parse1(self, response):
         """ 抓取个人信息2 """
-        print 'wocaoniam'
         informationItems = response.meta["item"]
         selector = Selector(response)
         text1 = ";".join(selector.xpath('body/div[@class="c"]/text()').extract())  # 获取标签里的所有text()
@@ -103,6 +101,9 @@ class Spider(CrawlSpider):
         if url:
             informationItems["URL"] = url[0]
         yield informationItems
+        url_next = selector.xpath('body/div[@class="u"]/div[@class="tip2"]').extract_first()
+        if url_next:
+            yield Request(url=self.host + url_next[0], meta={"ID": response.meta["ID"]}, callback=self.parse0)
 
     def parse2(self, response):
         """ 抓取微博数据 """
@@ -144,7 +145,7 @@ class Spider(CrawlSpider):
             yield Request(url=self.host + url_next[0], meta={"ID": response.meta["ID"]}, callback=self.parse2)
 
     def parse3(self, response):
-        """ 抓取关注或粉丝 """
+        """ 抓取粉丝 """
         items = response.meta["item"]
         selector = Selector(response)
         text2 = selector.xpath(
@@ -161,5 +162,25 @@ class Spider(CrawlSpider):
         if url_next:
             yield Request(url=self.host + url_next[0], meta={"item": items, "result": response.meta["result"]},
                           callback=self.parse3)
+        else:  # 如果没有下一页即获取完毕
+            yield items
+    def parse4(self, response):
+        """ 抓取关注 """
+        items = response.meta["item"]
+        selector = Selector(response)
+        text2 = selector.xpath(
+            u'body//table/tr/td/a[text()="\u5173\u6ce8\u4ed6" or text()="\u5173\u6ce8\u5979"]/@href').extract()
+        for elem in text2:
+            elem = re.findall('uid=(\d+)', elem)
+            if elem:
+                response.meta["result"].append(elem[0])
+                ID = int(elem[0])
+                if ID not in self.finish_ID:  # 新的ID，如果未爬则加入待爬队列
+                    self.scrawl_ID.add(ID)
+        url_next = selector.xpath(
+            u'body//div[@class="pa" and @id="pagelist"]/form/div/a[text()="\u4e0b\u9875"]/@href').extract()
+        if url_next:
+            yield Request(url=self.host + url_next[0], meta={"item": items, "result": response.meta["result"]},
+                          callback=self.parse4)
         else:  # 如果没有下一页即获取完毕
             yield items
